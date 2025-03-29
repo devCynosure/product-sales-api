@@ -1,8 +1,9 @@
 package com.sparksupport.productsales.controller;
 
 import com.sparksupport.productsales.dto.ProductDTO;
-import com.sparksupport.productsales.model.Product;
+import com.sparksupport.productsales.dto.ResponseDTO;
 import com.sparksupport.productsales.service.ProductService;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,9 @@ public class ProductController {
     }
 
     @GetMapping()
-    public List<ProductDTO> getAllProducts() {
-        return productService.getAllProducts();
+    public ResponseDTO getAllProducts(@RequestParam(defaultValue = "1") Integer pageNo,
+                                      @RequestParam(defaultValue = "10") Integer pageSize) {
+        return productService.getAllProducts(pageNo, pageSize);
     }
 
     @GetMapping("/{id}")
@@ -38,12 +40,22 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String>updateProduct(@PathVariable String id, @RequestBody ProductDTO productDTO){
+    public ResponseEntity<String> updateProduct(@PathVariable String id, @RequestBody ProductDTO productDTO) {
         return productService.updateProduct(id, productDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String>deleteProduct(@PathVariable String id){
+    public ResponseEntity<String> deleteProduct(@PathVariable String id) {
         return productService.deleteProduct(id);
+    }
+
+    @GetMapping("/gettotalrevenue")
+    public String getTotalRevenue() {
+        return productService.getTotalRevenue();
+    }
+
+    @GetMapping("/getrevenuebyid/{id}")
+    public String getRevenueByProductId(@PathVariable String id) {
+        return productService.getRevenueByProductId(id);
     }
 }

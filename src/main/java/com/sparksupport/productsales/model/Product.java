@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @SqlResultSetMapping(
         name = "productsMapping",
@@ -23,7 +25,11 @@ import lombok.NoArgsConstructor;
 
 @NamedNativeQuery(
         name = "Product.getAllProducts",
-        query = "SELECT id, name, description, price, quantity FROM product",
+        query = "SELECT id, name, description, price, quantity FROM product LIMIT ?2 OFFSET ?1",
+        resultSetMapping = "productsMapping"
+)@NamedNativeQuery(
+        name = "Product.getProductById",
+        query = "SELECT id, name, description, price, quantity FROM product WHERE id = ?1",
         resultSetMapping = "productsMapping"
 )
 
@@ -50,4 +56,7 @@ public class Product {
 
     @Column
     private Integer quantity;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
+    private List<Sales> sales;
 }

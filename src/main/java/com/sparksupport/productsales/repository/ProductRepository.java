@@ -15,9 +15,9 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, String> {
 
     @Query(nativeQuery = true)
-    List<ProductDTO> getAllProducts();
+    List<ProductDTO> getAllProducts(Integer offset, Integer pageSize);
 
-    @Query(value = "SELECT id, name, description, price, quantity FROM product WHERE id = ?1", nativeQuery = true)
+    @Query(nativeQuery = true)
     ProductDTO getProductById(String id);
 
     @Modifying
@@ -35,4 +35,5 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     @Transactional
     @Query(value = "DELETE FROM product WHERE id = ?1 ", nativeQuery = true)
     void deleteProduct(String id);
+
 }

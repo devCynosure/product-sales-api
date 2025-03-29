@@ -2,9 +2,10 @@ package com.sparksupport.productsales.service;
 
 import com.fasterxml.uuid.Generators;
 import com.sparksupport.productsales.dto.ProductDTO;
+import com.sparksupport.productsales.dto.ResponseDTO;
 import com.sparksupport.productsales.repository.ProductRepository;
-import org.hibernate.generator.Generator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,15 +15,28 @@ import java.util.List;
 @Service
 public class ProductService {
 
+    @Value("${custom.error-code}")
+    private Integer errorCode;
+
     private ProductRepository productRepository;
+
+    private SalesService salesService;
 
     @Autowired
     @Lazy
-    public ProductService(ProductRepository productRepository){
+    public ProductService(ProductRepository productRepository, SalesService salesService) {
         this.productRepository = productRepository;
+        this.salesService = salesService;
     }
-    public List<ProductDTO> getAllProducts() {
-        return productRepository.getAllProducts();
+
+
+    public ResponseDTO getAllProducts(Integer pageNo, Integer pageSize) {
+        try {
+            int offset= pageSize * (pageNo - 1);
+            return new ResponseDTO(productRepository.getAllProducts(offset,pageSize),200,true,null);
+        } catch (Exception e) {
+            return new ResponseDTO(null,errorCode,false,e.getMessage());
+        }
     }
 
     public ProductDTO getProductById(String id) {
@@ -45,5 +59,14 @@ public class ProductService {
     public ResponseEntity<String> deleteProduct(String id) {
         productRepository.deleteProduct(id);
         return ResponseEntity.ok("Product deleted successfully!");
+    }
+
+    public String getTotalRevenue() {
+        return salesService.getTotalRevenue();
+
+    }
+
+    public String getRevenueByProductId(String id) {
+        return salesService.getRevenueByProductId(id);
     }
 }
