@@ -56,4 +56,14 @@ public class ProductDTO {
         this.quantity = quantity;
     }
 
+    @Override
+    public String toString() {
+        return "ProductDTO{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                '}';
+    }
 }
