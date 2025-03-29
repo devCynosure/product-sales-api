@@ -7,6 +7,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,32 +31,35 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ProductDTO getProductById(@PathVariable String id) {
+    public ResponseDTO getProductById(@PathVariable String id) {
         return productService.getProductById(id);
     }
 
     @PostMapping()
-    public ResponseEntity<String> insertProducts(@RequestBody List<ProductDTO> productDTOList) {
+//    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseDTO insertProducts(@RequestBody List<ProductDTO> productDTOList) {
         return productService.insertProducts(productDTOList);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateProduct(@PathVariable String id, @RequestBody ProductDTO productDTO) {
+//    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseDTO updateProduct(@PathVariable String id, @RequestBody ProductDTO productDTO) {
         return productService.updateProduct(id, productDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable String id) {
+//    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseDTO deleteProduct(@PathVariable String id) {
         return productService.deleteProduct(id);
     }
 
     @GetMapping("/gettotalrevenue")
-    public String getTotalRevenue() {
+    public ResponseDTO getTotalRevenue() {
         return productService.getTotalRevenue();
     }
 
     @GetMapping("/getrevenuebyid/{id}")
-    public String getRevenueByProductId(@PathVariable String id) {
+    public ResponseDTO getRevenueByProductId(@PathVariable String id) {
         return productService.getRevenueByProductId(id);
     }
 }
