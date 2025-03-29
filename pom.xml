@@ -60,6 +60,20 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.uuid/java-uuid-generator -->
+		<dependency>
+			<groupId>com.fasterxml.uuid</groupId>
+			<artifactId>java-uuid-generator</artifactId>
+			<version>5.1.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
