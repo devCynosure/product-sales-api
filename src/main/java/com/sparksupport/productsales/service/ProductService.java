@@ -159,7 +159,7 @@ public class ProductService {
 
             document.add(new Paragraph("Product List").simulateBold().setFontSize(18));
 
-            Table table = new Table(UnitValue.createPercentArray(new float[]{2, 4, 6, 3, 3}))
+            Table table = new Table(UnitValue.createPercentArray(new float[]{2, 4, 6, 3, 3, 3}))
                     .useAllAvailableWidth();
 
             table.addHeaderCell("ID");
@@ -167,16 +167,18 @@ public class ProductService {
             table.addHeaderCell("Description");
             table.addHeaderCell("Price");
             table.addHeaderCell("Quantity");
+            table.addHeaderCell("Revenue");
 
             for (ProductDTO productDTO : products) {
                 try {
                     log.info("Adding row : {}", productDTO);
-
+                    String revenue = salesService.getRevenueByProductId(productDTO.getId());
                     table.addCell(productDTO.getId());
                     table.addCell(productDTO.getName());
                     table.addCell(productDTO.getDescription());
                     table.addCell(String.valueOf(productDTO.getPrice()));
                     table.addCell(String.valueOf(productDTO.getQuantity()));
+                    table.addCell(String.valueOf(revenue));
                 } catch (Exception e) {
                     log.error("Error occurred while inserting the row : {}", productDTO);
                 }
