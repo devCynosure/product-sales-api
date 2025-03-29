@@ -25,13 +25,20 @@ import java.util.List;
 
 @NamedNativeQuery(
         name = "Product.getAllProducts",
+        query = "SELECT id, name, description, price, quantity FROM product",
+        resultSetMapping = "productsMapping"
+)
+@NamedNativeQuery(
+        name = "Product.getAllProductsPaginated",
         query = "SELECT id, name, description, price, quantity FROM product LIMIT ?2 OFFSET ?1",
         resultSetMapping = "productsMapping"
-)@NamedNativeQuery(
+)
+@NamedNativeQuery(
         name = "Product.getProductById",
         query = "SELECT id, name, description, price, quantity FROM product WHERE id = ?1",
         resultSetMapping = "productsMapping"
 )
+
 
 
 

@@ -15,7 +15,7 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, String> {
 
     @Query(nativeQuery = true)
-    List<ProductDTO> getAllProducts(Integer offset, Integer pageSize);
+    List<ProductDTO> getAllProductsPaginated(Integer offset, Integer pageSize);
 
     @Query(nativeQuery = true)
     ProductDTO getProductById(String id);
@@ -36,4 +36,6 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     @Query(value = "DELETE FROM product WHERE id = ?1 ", nativeQuery = true)
     void deleteProduct(String id);
 
+    @Query(nativeQuery = true)
+    List<ProductDTO> getAllProducts();
 }
