@@ -14,29 +14,16 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-//    private final IpFilter ipFilter;
-//
-//    public SecurityConfig(IpFilter ipFilter) {
-//        this.ipFilter = ipFilter;
-//    }
+    private final IpFilter ipFilter;
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/admin/**").hasRole("ADMIN")
-//                        .anyRequest().authenticated()
-//                )
-//                .formLogin(withDefaults())
-//                .httpBasic(withDefaults());
-//
-//        return http.build();
-//    }
+    public SecurityConfig(IpFilter ipFilter) {
+        this.ipFilter = ipFilter;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -49,7 +36,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .httpBasic(httpBasic -> {})
-                .csrf(csrf -> csrf.disable());
+                .csrf(csrf -> csrf.disable())
+                .addFilterBefore(ipFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
