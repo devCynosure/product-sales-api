@@ -4,13 +4,11 @@ import com.fasterxml.uuid.Generators;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.UnitValue;
 import com.sparksupport.productsales.dto.ProductDTO;
 import com.sparksupport.productsales.dto.ResponseDTO;
-import com.sparksupport.productsales.model.Product;
 import com.sparksupport.productsales.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -24,8 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.List;
 
 @Slf4j
@@ -66,7 +62,7 @@ public class ProductService {
             log.info("Trying to get product by id : {}", id);
             return new ResponseDTO(productRepository.getProductById(id), 200, true, null);
         } catch (Exception e) {
-            log.error("Error occurred while get product by id: {}",id);
+            log.error("Error occurred while get product by id: {}", id);
             return new ResponseDTO(null, errorCode, false, e.getMessage());
         }
     }
@@ -79,7 +75,7 @@ public class ProductService {
                     productDTO.setId(Generators.timeBasedGenerator().generate().toString());
                     productRepository.insertProducts(productDTO.getId(), productDTO.getName(), productDTO.getDescription(), productDTO.getPrice(), productDTO.getQuantity());
                 } catch (Exception e) {
-                    log.error("Error occurred while inserting: {}",productDTO.toString());
+                    log.error("Error occurred while inserting: {}", productDTO.toString());
                 }
             }
             return new ResponseDTO("Products inserted successfully!", 200, true, null);
@@ -103,10 +99,18 @@ public class ProductService {
 
     }
 
-    public ResponseDTO deleteProduct(String id) {
+    public ResponseDTO deleteProduct(String productId) {
         try {
-            log.info("Trying to delete product by id : {}", id);
-            productRepository.deleteProduct(id);
+            log.info("Delete product by id : {} ", productId);
+            List<String> salesIdList = salesService.getSalesByProductId(productId);
+            for (String salesId : salesIdList) {
+                try {
+                    salesService.deleteSalesById(salesId);
+                } catch (Exception e) {
+                    log.error("Error occurred while deleting the sales record id : {} ", salesId);
+                }
+            }
+            productRepository.deleteProduct(productId);
         } catch (Exception e) {
             log.error("Error occurred while deleting product");
             return new ResponseDTO(null, errorCode, false, e.getMessage());
@@ -117,7 +121,7 @@ public class ProductService {
     public ResponseDTO getTotalRevenue() {
         try {
             log.info("Trying to get total revenue");
-            return new ResponseDTO( salesService.getTotalRevenue(), 200, true, null);
+            return new ResponseDTO(salesService.getTotalRevenue(), 200, true, null);
 
         } catch (Exception e) {
             log.error("Error occurred while getting total revenue");
@@ -128,15 +132,15 @@ public class ProductService {
 
     public ResponseDTO getRevenueByProductId(String id) {
         try {
-            log.info("Trying to get revenue by id : {}",id);
+            log.info("Trying to get revenue by id : {}", id);
             return new ResponseDTO(salesService.getRevenueByProductId(id), 200, true, null);
         } catch (Exception e) {
-            log.error("Error occurred while getting revenue by id : {}",id);
+            log.error("Error occurred while getting revenue by id : {}", id);
             return new ResponseDTO(null, errorCode, false, e.getMessage());
         }
     }
 
-    public ResponseEntity<byte[]> downloadPdf(){
+    public ResponseEntity<byte[]> downloadPdf() {
         try {
             byte[] pdfBytes = generateProductPdf();
 
@@ -145,10 +149,11 @@ public class ProductService {
                     .contentType(MediaType.APPLICATION_PDF)
                     .body(pdfBytes);
         } catch (Exception e) {
-            log.error("Error occurred in download pdf : {}",e.getMessage());
+            log.error("Error occurred in download pdf : {}", e.getMessage());
         }
         return null;
     }
+
     public byte[] generateProductPdf() {
         List<ProductDTO> products = productRepository.getAllProducts();
 
@@ -192,5 +197,24 @@ public class ProductService {
             log.error("Error while generating PDF", e);
         }
         return new byte[0];
+    }
+
+    public void updateProductQuantity(String productId, Integer soldQuantity) {
+        try {
+            log.info("Trying to update product quantity by id : {}", productId);
+            productRepository.updateProductQuantity(productId, soldQuantity);
+        } catch (Exception e) {
+            log.error("Error occurred while updating product quantity : {}", e.getMessage());
+        }
+    }
+
+    public int getAvailableProductQuantity(String productId) {
+        try {
+            log.info("Trying to fetch product quantity by id : {}", productId);
+            return productRepository.getAvailableProductQuantity(productId);
+        } catch (Exception e) {
+            log.error("Error occurred while fetch product quantity by id : {}", e.getMessage());
+        }
+        return 0;
     }
 }

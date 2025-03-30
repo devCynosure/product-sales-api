@@ -3,16 +3,11 @@ package com.sparksupport.productsales.controller;
 import com.sparksupport.productsales.dto.ProductDTO;
 import com.sparksupport.productsales.dto.ResponseDTO;
 import com.sparksupport.productsales.service.ProductService;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 @RestController
