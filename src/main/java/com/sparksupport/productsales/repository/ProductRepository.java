@@ -41,8 +41,8 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE product SET quantity = quantity - ?2 WHERE id = ?1  ",nativeQuery = true)
-    void updateProductQuantity(String productId, Integer soldQuantity);
+    @Query(value = "UPDATE product SET quantity = ?2 WHERE id = ?1  ",nativeQuery = true)
+    void updateProductQuantity(String productId, Integer quantity);
 
     @Query(value = "SELECT quantity FROM product WHERE id = ?1 ", nativeQuery = true)
     int getAvailableProductQuantity(String productId);
